@@ -7,23 +7,28 @@ import "react-toastify/dist/ReactToastify.css";
 import { notify } from "./toast";
 import { Link } from "react-router-dom";
 
-const Login = () => {
+const SingUp = () => {
   const [data, setData] = useState({
+    name: "",
     email: "",
     password: "",
+    confrimPassword: "",
+    isAccepted: false
   });
 
   const [errors, setErorrs] = useState({});
   const [touched, setTouched] = useState({});
 
   useEffect(() => {
-    setErorrs(validate(data,"login"));
+    setErorrs(validate(data, "singUp"));
   }, [data, touched]);
 
   const changeHandler = (event) => {
-  
+    if (event.target.name === "isAccepted") {
+      setData({ ...data, [event.target.name]: event.target.checked });
+    } else {
       setData({ ...data, [event.target.name]: event.target.value });
- 
+    }
   };
 
   const focusHandler = (event) => {
@@ -36,8 +41,11 @@ const Login = () => {
       notify("succes your sing UP", "succes");
     } else {
       setTouched({
+        name: true,
         password: true,
         email: true,
+        confrimPassword: true,
+        isAccepted: true
       });
       notify("invalid data", "error");
     }
@@ -46,8 +54,23 @@ const Login = () => {
   return (
     <div className={styles.container}>
       <form onSubmit={submitHandler} className={styles.formContainer}>
-        <h1 className={styles.header}>Login page</h1>
-        
+        <h1 className={styles.header}>SingUp page</h1>
+        <div className={styles.formField}>
+          <label>Name</label>
+          <input
+            className={
+              errors.name && touched.name
+                ? styles.uncompleted
+                : styles.formInput
+            }
+            type='text'
+            name='name'
+            value={data.name}
+            onChange={changeHandler}
+            onFocus={focusHandler}
+          />
+          {errors.name && touched.name && <span> errors.name</span>}
+        </div>
 
         <div className={styles.formField}>
           <label>Email</label>
@@ -83,14 +106,50 @@ const Login = () => {
           {errors.password && touched.password && <span> errors.password</span>}
         </div>
 
-      
+        <div className={styles.formField}>
+          <label>Confrim Password</label>
+          <input
+            className={
+              errors.confrimPassword && touched.confrimPassword
+                ? styles.uncompleted
+                : styles.formInput
+            }
+            type='password'
+            name='confrimPassword'
+            value={data.confrimPassword}
+            onChange={changeHandler}
+            onFocus={focusHandler}
+          />
+          {errors.confrimPassword && touched.confrimPassword && (
+            <span>{errors.confrimPassword}</span>
+          )}
+        </div>
 
-        
+        <div className={styles.formField}>
+          <div className={styles.checkBoxContainer}>
+            <label>I accepted this terms</label>
+
+            <input
+              className={
+                errors.isAccepted && touched.isAccepted
+                  ? styles.uncompleted
+                  : styles.formInput
+              }
+              type='checkbox'
+              name='isAccepted'
+              value={data.isAccepted}
+              onChange={changeHandler}
+              onFocus={focusHandler}
+            />
+          </div>
+          {errors.isAccepted && touched.isAccepted && (
+            <span> errors.isAccepted</span>
+          )}
+        </div>
 
         <div className={styles.formButtons}>
-        <Link to='/singup'>Sing Up</Link>
-
-          <button type='submit'>Login</button>
+          <Link to='/login'>Login</Link>
+          <button type='submit'>Sign Up</button>
         </div>
       </form>
       <ToastContainer />
@@ -98,4 +157,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SingUp;
